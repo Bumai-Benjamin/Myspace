@@ -7,13 +7,15 @@
 // caption: your words about ONE photo. Shown under "This frame" when
 // that photo is open. Leave it '' to hide the block for that photo.
 // ─────────────────────────────────────────────────────────────
+import AUTO from './auto-photos.json';
+
 export const SITE = {
   name: 'BENITIA',      // logo + film-edge printing
   stock: '400',         // printed after the name on the film edge
   code: 'BT-36',        // little code printed on the edge
 };
 
-export const ROLLS = [
+const CURATED = [
   {
     "slug": "golden-hour-drive",
     "title": "GOLDEN HOUR DRIVE",
@@ -396,6 +398,14 @@ export const ROLLS = [
     ]
   }
 ];
+
+// Photos added automatically from the Google Drive "My Space" folder
+// (scripts/sync_drive.py, run by GitHub every 15 minutes). Each one becomes
+// a new frame at the end of the film strip. To rename one or give it a
+// caption, edit its "title" / "caption" in src/auto-photos.json.
+export const ROLLS = CURATED.concat(
+  AUTO.map((p) => ({ slug: `frame-${p.id}`, title: p.title, note: '', takes: [p] })),
+);
 
 // MUSIC — the playlists in the soundtrack drawer (spinning record, bottom right).
 // Paste PUBLIC Spotify playlist links (Share → Copy link). name = text on the chip.

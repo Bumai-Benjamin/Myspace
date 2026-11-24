@@ -663,6 +663,8 @@ function buildInfo() {
     $('#i-cams').append(li);
   });
   $('#menu-count').textContent = `${PHOTOS.length} frames · ${N} rolls`;
+  $('#ld-total').textContent = pad(PHOTOS.length);
+  $('#vf-exp').textContent = `${PHOTOS.length} exp`;
 }
 const drumEls = [...document.querySelectorAll('.d')];
 function updateDrum() {
@@ -736,7 +738,7 @@ async function boot() {
   let done = 0;
   const tick = () => {
     done++;
-    $('#ld-n').textContent = pad(Math.round((done / total) * 27));
+    $('#ld-n').textContent = pad(Math.round((done / total) * PHOTOS.length));
     gsap.to(irisV, { value: 0.06 + 0.3 * (done / total), duration: 0.5, overwrite: true });
   };
   const safe = (p) => p.catch(() => blank());

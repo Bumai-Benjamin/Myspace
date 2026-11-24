@@ -248,6 +248,24 @@ body.sheet-open #sheet { transform: translate(-50%, 0); }
 #sh-status { color: #9a9a9a; font-size: 10px; margin-bottom: 10px; line-height: 1.8; }
 .sh-fallback { display: grid; gap: 8px; padding: 16px; }
 .sh-fallback a { color: #eee; font: 600 14px/1.4 var(--sans); text-decoration: none; padding: 12px 14px; border-radius: 10px; background: #222; }
+.sh-full {
+  display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 12px 14px; min-height: 56px;
+  border-radius: 14px; background: #1a1a1a; border: 1px solid #2c2c2c; color: #eee; text-decoration: none;
+  transition: background .25s, border-color .25s;
+}
+.sh-full:hover { background: #222; border-color: #3a3a3a; }
+.sh-full svg { flex: none; width: 26px; height: 26px; color: #1ed760; }
+.sh-full span { display: grid; gap: 2px; }
+.sh-full b { font: 700 14px/1.2 var(--sans); }
+.sh-full small { color: #9a9a9a; font-size: 12px; line-height: 1.35; }
+/* on phones the app button is the main way to hear full songs: put it first and make it green */
+body.is-phone #sheet { display: flex; flex-direction: column; }
+body.is-phone #sheet > * { flex-shrink: 0; }
+body.is-phone .sh-full { order: 0; margin: 0 0 12px; background: #1ed760; border-color: #1ed760; color: #08130b; }
+body.is-phone .sh-full svg { color: #08130b; }
+body.is-phone .sh-full small { color: #134d26; }
+body.is-phone .sh-grab { order: -3; } body.is-phone .sh-head { order: -2; } body.is-phone .sh-lists { order: -1; }
+body.is-phone #sh-status, body.is-phone #sh-embed, body.is-phone .sh-note { order: 1; }
 .sh-note { margin-top: 12px; color: #8a8a8a; font-size: 12px; line-height: 1.6; }
 
 /* ── first-visit intro ──────────────────── */

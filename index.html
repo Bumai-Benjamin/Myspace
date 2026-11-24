@@ -111,7 +111,11 @@
   <div id="sh-lists" class="sh-lists"></div>
   <p id="sh-status" class="mono" hidden></p>
   <div id="sh-embed"></div>
-  <p class="sh-note">Pick a playlist, then any song in it. Full songs play if you are logged in to Spotify in this browser on a computer; otherwise Spotify plays 30-second previews. Close this drawer and the music keeps going.</p>
+  <a id="sh-full" class="sh-full" href="https://open.spotify.com" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm4.6 14.4a.6.6 0 0 1-.9.2c-2.4-1.5-5.4-1.8-9-1a.6.6 0 1 1-.3-1.2c3.9-.9 7.2-.5 9.9 1.1.3.2.4.6.3.9Zm1.2-2.7a.8.8 0 0 1-1 .3c-2.7-1.7-6.9-2.2-10.1-1.2a.8.8 0 0 1-.5-1.5c3.7-1.1 8.3-.6 11.4 1.4.4.2.5.7.2 1Zm.1-2.8C14.7 9 9.4 8.8 6.3 9.7a.9.9 0 1 1-.5-1.8c3.5-1.1 9.4-.9 13.1 1.3a.9.9 0 0 1-1 1.7Z"/></svg>
+    <span><b>Play full songs in the Spotify app</b><small id="sh-full-sub">Opens this playlist in Spotify. It keeps playing while you browse.</small></span>
+  </a>
+  <p class="sh-note" id="sh-note"></p>
 </section>
 
 <!-- First-visit intro -->

@@ -22,8 +22,17 @@ function toUri(url) {
   return m ? `spotify:${m[1]}:${m[2]}` : null;
 }
 
+// Spotify only plays full songs inside website players on a computer,
+// for people logged in to Spotify in that browser. Phones get previews,
+// so phones get a big "open in the Spotify app" button instead.
+const phone = matchMedia('(pointer: coarse)').matches;
+
 export function initMusic() {
   const disc = $('#disc');
+  $('#sh-note').textContent = phone
+    ? 'The player here plays 30-second previews on phones (Spotify’s rule). For full songs, use the button above: the Spotify app plays the whole playlist in the background while you keep browsing.'
+    : 'Full songs play here if you are logged in to Spotify in this browser (log in at open.spotify.com, then reopen this drawer). Otherwise Spotify plays 30-second previews, or use the button to open the playlist in Spotify.';
+  body.classList.toggle('is-phone', phone);
   const lists = $('#sh-lists');
   MUSIC.playlists.forEach((p, i) => {
     const b = document.createElement('button');
@@ -194,6 +203,11 @@ function mark(i) {
     p.el.classList.toggle('on', k === i);
     p.el.setAttribute('aria-pressed', k === i);
   });
+  const p = MUSIC.playlists[i];
+  if (p) {
+    $('#sh-full').href = p.url;
+    $('#sh-full').setAttribute('aria-label', `Play ${p.name} in the Spotify app (opens Spotify)`);
+  }
   const c = MUSIC.playlists[i]?.cover;
   $('#disc .label').style.backgroundImage = c ? `url("${c}")` : '';
 }

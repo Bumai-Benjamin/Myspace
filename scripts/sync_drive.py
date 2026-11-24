@@ -176,7 +176,9 @@ def main():
     else:
         key, folder = os.environ.get("GDRIVE_SA_KEY"), os.environ.get("GDRIVE_FOLDER_ID")
         if not key or not folder:
-            sys.exit("Missing GDRIVE_SA_KEY secret or GDRIVE_FOLDER_ID. See README: 'Auto-update from Google Drive'.")
+            # not set up yet: skip quietly instead of failing every 15 minutes
+            print("::warning::GDRIVE_SA_KEY secret not set yet, skipping. See README: 'Auto-update from Google Drive'.")
+            return
         src = DriveSource(key, folder)
 
     seen = set(load(SEEN, []))

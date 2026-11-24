@@ -180,13 +180,18 @@ def main():
             print("::warning::GDRIVE_SA_KEY secret not set yet, skipping. See README: 'Auto-update from Google Drive'.")
             return
         src = DriveSource(key, folder)
+        print(f"Reading Drive as {json.loads(key).get('client_email', '?')}")
 
     seen = set(load(SEEN, []))
     auto = load(AUTO, [])
     known = curated_ids() | {a["id"] for a in auto}
     added, skipped = [], 0
 
-    for f in src.list():
+    files = src.list()
+    print(f"Photos visible in the folder: {len(files)}")
+    if not files and not args.local:
+        print("::warning::Can't see any photos. Share the My Space folder with the email above (Viewer).")
+    for f in files:
         if f["id"] in seen:
             continue
         if len(added) >= MAX_PER_RUN:

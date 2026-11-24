@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BeniTia · Photographs</title>
+<meta name="description" content="BeniTia: twenty-seven photographs printed on one long, bending roll of film.">
+<meta name="theme-color" content="#f3f2ef">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;800;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="loading" data-view="work">
+<h1 class="sr">BeniTia: photographs on one long roll of film</h1>
+
+<!-- The whole 3D world is drawn into this one canvas -->
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<!-- Loader: a camera aperture opening over a photo -->
+<div id="loader">
+  <img src="photos/full/5876.webp" alt="">
+  <canvas id="iris"></canvas>
+  <div class="ld-count mono"><span id="ld-n">00</span> / 27</div>
+  <p id="ld-err" class="mono" hidden>This site needs WebGL. Try a recent version of Chrome, Safari or Firefox.</p>
+</div>
+
+<!-- HUD: the four corners, like a viewfinder -->
+<header id="hud">
+  <a class="logo" href="#work">BENITIA</a>
+  <button id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
+</header>
+<button id="back" class="mono" aria-label="Back">← Back</button>
+
+<nav id="menu" aria-label="Main">
+  <a href="#work" data-v="work">Work</a>
+  <a href="#index" data-v="index">Index</a>
+  <a href="#info" data-v="info">Info</a>
+  <button id="menu-intro" type="button">How it works</button>
+  <hr>
+  <p class="mono">BeniTia 400 · BT-36<br><span id="menu-count"></span></p>
+</nav>
+<div id="veil"></div>
+
+<div id="edge-fade" aria-hidden="true"></div>
+<footer id="readout" class="mono">
+  <div id="r-left"></div>
+  <div id="r-right"></div>
+</footer>
+<div id="hint" class="mono">Scroll or drag · click a frame</div>
+
+<!-- Project view: the text around the photos (photos are in WebGL) -->
+<section id="project" aria-label="Roll details">
+  <div class="p-left mono">
+    <dl>
+      <dt>Roll</dt><dd id="p-title"></dd>
+      <dt>Frames</dt><dd id="p-frames"></dd>
+      <dt>Camera</dt><dd id="p-cam"></dd>
+    </dl>
+    <p id="p-note"></p>
+    <div id="p-capwrap" hidden><span class="p-label">This frame</span><p id="p-cap"></p></div>
+  </div>
+  <dl class="p-right mono">
+    <dt>Date</dt><dd id="p-date"></dd>
+    <dt>Exposure</dt><dd id="p-exp"></dd>
+    <dt>Take</dt><dd id="p-take"></dd>
+  </dl>
+  <div class="p-nav">
+    <button id="prev" class="mono"></button>
+    <button id="next" class="mono"></button>
+  </div>
+  <p id="p-hint" class="mono">Scroll for the next take</p>
+</section>
+
+<!-- Info: a viewfinder, then text on a turning drum -->
+<section id="info" aria-label="About BeniTia">
+  <div class="vf">
+    <div class="vf-screen">
+      <img src="photos/full/5771.webp" alt="In the passenger seat at sunset, looking at the camera">
+      <div class="af" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="vf-top mono"><span>AF-S</span><span>27 exp</span></div>
+      <div class="vf-name">BENITIA</div>
+      <div class="vf-read mono">1/60 &nbsp; F/1.5 &nbsp; ISO 400</div>
+    </div>
+    <p class="vf-scroll mono">Scroll</p>
+  </div>
+  <div class="drum">
+    <h2 class="d">BENITIA</h2>
+    <p class="d lead">BeniTia is a personal archive dressed up as a roll of film: twenty-seven phone photographs, most of them from September to November 2026, cut into twelve short rolls and printed edge to edge like a contact sheet.</p>
+    <div class="d cols">
+      <div><h3 class="mono">Rolls</h3><ol id="i-rolls"></ol></div>
+      <div><h3 class="mono">Cameras</h3><ul id="i-cams"></ul></div>
+      <div><h3 class="mono">Soundtrack</h3><ul><li>Tap the record, bottom right</li><li>Pick a playlist, then any song</li><li>It keeps playing as you browse</li></ul></div>
+      <div><h3 class="mono">Built with</h3><ul><li>Three.js (WebGL)</li><li>GSAP</li><li>Vite</li><li>Spotify embeds</li><li>Film edges drawn in code</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- Music: small record bottom-right + bottom sheet with Spotify -->
+<button id="disc" type="button" aria-label="Music: open the soundtrack" aria-expanded="false" aria-controls="sheet">
+  <span class="vinyl"><span class="label"></span></span>
+  <svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5"/></svg>
+  <span class="disc-tip mono" aria-hidden="true">Music</span>
+</button>
+<div id="sh-scrim"></div>
+<section id="sheet" role="dialog" aria-label="Soundtrack" aria-hidden="true" inert>
+  <div class="sh-grab" aria-hidden="true"><i></i></div>
+  <header class="sh-head">
+    <div><p class="mono sh-k">BeniTia · Soundtrack</p><h2>Play anything while you look around</h2></div>
+    <button id="sh-close" type="button" class="mono">Close</button>
+  </header>
+  <div id="sh-lists" class="sh-lists"></div>
+  <p id="sh-status" class="mono" hidden></p>
+  <div id="sh-embed"></div>
+  <p class="sh-note">Pick a playlist, then any song in it. Full songs play if you are logged in to Spotify in this browser on a computer; otherwise Spotify plays 30-second previews. Close this drawer and the music keeps going.</p>
+</section>
+
+<!-- First-visit intro -->
+<div id="intro" role="dialog" aria-label="How this site works" hidden>
+  <div class="in-card">
+    <p class="mono in-step"><span id="in-n">01</span> / 03 · How it works</p>
+    <h2 id="in-title"></h2>
+    <p id="in-text"></p>
+    <div class="in-foot">
+      <button id="in-skip" type="button" class="mono">Skip</button>
+      <div class="in-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <button id="in-next" type="button" class="mono">Next</button>
+    </div>
+  </div>
+</div>
+
+<div id="cursor" aria-hidden="true"><span>View</span></div>
+<div id="live" class="sr" aria-live="polite"></div>
+<noscript><p style="padding:40px;font:16px sans-serif">BeniTia needs JavaScript and WebGL to show its film strip.</p></noscript>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

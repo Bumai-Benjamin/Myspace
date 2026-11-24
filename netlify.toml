@@ -1,0 +1,8 @@
+# Netlify reads this automatically: it installs packages, runs the build
+# and publishes the dist folder.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"

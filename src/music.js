@@ -52,24 +52,59 @@ export function initMusic() {
   $('#sh-scrim').addEventListener('click', () => toggleSheet(false));
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) toggleSheet(false); });
 
-  // drag the grab bar down to close
-  const grab = $('.sh-grab');
-  let y0 = null;
-  grab.addEventListener('pointerdown', (e) => { y0 = e.clientY; grab.setPointerCapture(e.pointerId); });
-  grab.addEventListener('pointermove', (e) => {
-    if (y0 === null) return;
-    const d = Math.max(0, e.clientY - y0);
-    $('#sheet').style.transform = `translate(-50%, ${d}px)`;
-  });
-  const end = (e) => {
-    if (y0 === null) return;
-    const d = e.clientY - y0;
-    y0 = null;
-    $('#sheet').style.transform = '';
-    if (d > 80) toggleSheet(false);
+  // Drag down to close, like a native bottom sheet. Works from the grab bar,
+  // the title and the playlist row (Spotify's player is its own page, so
+  // touches inside it stay with Spotify). Only starts when the sheet is
+  // scrolled to the top and the pull is mostly downward.
+  const sheet = $('#sheet'), scrim = $('#sh-scrim');
+  let drag = null;
+  const begin = (x, y, target) => {
+    if (!isOpen || target.closest('#sh-embed, #sh-close')) return;
+    const t = performance.now();
+    drag = { x, y, dy: 0, on: false, pts: [{ y, t }] };
   };
-  grab.addEventListener('pointerup', end);
-  grab.addEventListener('pointercancel', end);
+  const move = (x, y, e) => {
+    if (!drag) return;
+    const dx = x - drag.x, dy = y - drag.y;
+    if (!drag.on) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      if (dy > 0 && Math.abs(dy) > Math.abs(dx) && sheet.scrollTop <= 0) {
+        drag.on = true;
+        sheet.style.transition = 'none';
+        scrim.style.transition = 'none';
+      } else { drag = null; return; } // sideways (playlist row) or scrolling up: let it scroll
+    }
+    if (e && e.cancelable) e.preventDefault(); // stops the iPhone scroll bounce
+    const now = performance.now();
+    drag.pts.push({ y, t: now });
+    while (drag.pts.length > 2 && now - drag.pts[0].t > 120) drag.pts.shift(); // keep the last ~0.1s
+    drag.dy = Math.max(0, dy);
+    sheet.style.transform = `translate(-50%, ${drag.dy}px)`;
+    scrim.style.opacity = String(Math.max(0, 1 - drag.dy / sheet.offsetHeight));
+  };
+  const end = () => {
+    if (!drag) return;
+    const d = drag;
+    drag = null;
+    if (!d.on) return;
+    const a = d.pts[0], b = d.pts[d.pts.length - 1];
+    const v = b.t > a.t ? (b.y - a.y) / (b.t - a.t) : 0; // speed over the last ~0.1s, px per ms
+    sheet.style.transition = '';
+    scrim.style.transition = '';
+    void sheet.offsetHeight; // re-enable the animation before moving
+    sheet.style.transform = '';
+    scrim.style.opacity = '';
+    if (d.dy > Math.min(120, sheet.offsetHeight * 0.22) || (v > 0.45 && d.dy > 24)) toggleSheet(false); // far enough, or a flick
+  };
+  // touch (phones): non-passive so we can stop the bounce
+  sheet.addEventListener('touchstart', (e) => { const t = e.touches[0]; begin(t.clientX, t.clientY, e.target); }, { passive: true });
+  sheet.addEventListener('touchmove', (e) => { const t = e.touches[0]; move(t.clientX, t.clientY, e); }, { passive: false });
+  sheet.addEventListener('touchend', end);
+  sheet.addEventListener('touchcancel', end);
+  // mouse (computers)
+  sheet.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && e.button === 0) begin(e.clientX, e.clientY, e.target); });
+  addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' && drag) move(e.clientX, e.clientY, e); });
+  addEventListener('pointerup', (e) => { if (e.pointerType === 'mouse') end(); });
 
   // the record turns slowly when idle and properly when a song plays
   const vinyl = disc.querySelector('.vinyl');

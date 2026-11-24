@@ -222,10 +222,12 @@ body.sheet-open #sh-scrim { opacity: 1; pointer-events: auto; }
   position: fixed; left: 50%; bottom: 0; z-index: 70; width: min(560px, 100%); max-height: 88vh; overflow-y: auto;
   transform: translate(-50%, 105%); transition: transform .55s cubic-bezier(.2,.8,.2,1);
   background: #121212; color: #eee; border-radius: 22px 22px 0 0; box-shadow: 0 -20px 60px rgba(0,0,0,.45);
-  padding: 0 20px calc(18px + env(safe-area-inset-bottom)); overscroll-behavior: contain;
+  padding: 0 20px calc(18px + env(safe-area-inset-bottom)); overscroll-behavior: none;
 }
 body.sheet-open #sheet { transform: translate(-50%, 0); }
-.sh-grab { display: grid; place-items: center; height: 26px; cursor: grab; touch-action: none; }
+.sh-grab { display: grid; place-items: center; height: 30px; cursor: grab; }
+.sh-head, .sh-grab { user-select: none; -webkit-user-select: none; }
+.sh-head { cursor: grab; }
 .sh-grab i { width: 40px; height: 4px; border-radius: 4px; background: #3a3a3a; }
 .sh-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
 .sh-k { color: #777; font-size: 10px; margin-bottom: 6px; }
